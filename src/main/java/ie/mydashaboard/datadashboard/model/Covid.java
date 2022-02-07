@@ -1,9 +1,14 @@
-package ie.mydashaboard.datadashboard.data.model;
+package ie.mydashaboard.datadashboard.model;
 
 import java.time.LocalDate;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Covid {
 
+    @Id
     private String location;
     private LocalDate date;
     private String variant;

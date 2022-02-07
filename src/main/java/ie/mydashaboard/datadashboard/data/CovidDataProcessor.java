@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.batch.item.ItemProcessor;
 
-import ie.mydashaboard.datadashboard.data.model.Covid;
+import ie.mydashaboard.datadashboard.model.Covid;
 
 public class CovidDataProcessor implements ItemProcessor<CovidInput, Covid> {
 
