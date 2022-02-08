@@ -2,9 +2,12 @@ package ie.mydashaboard.datadashboard.data;
 
 import javax.sql.DataSource;
 
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
@@ -17,16 +20,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
 import ie.mydashaboard.datadashboard.model.Covid;
-import ie.mydashaboard.datadashboard.model.Covid;
-
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 
 @Configuration
 @EnableBatchProcessing
 public class BatchConfig {
 
-    private final String[] FIELD_NAMES = new String[]{
-        "location", "date", "variant", "num_sequences" , "perc_sequences", "num_sequences_total"
+    private final String[] FIELD_NAMES = new String[] {
+           "id", "location", "date", "variant", "num_sequences", "perc_sequences", "total_sequences"
     };
 
     @Autowired
@@ -39,7 +39,7 @@ public class BatchConfig {
     public FlatFileItemReader<CovidInput> reader() {
         return new FlatFileItemReaderBuilder<CovidInput>()
                 .name("CovidItemReader")
-                .resource(new ClassPathResource("covid-variants.csv"))
+                .resource(new ClassPathResource("covid-variants-index.csv"))
                 .delimited()
                 .names(FIELD_NAMES)
                 .fieldSetMapper(new BeanWrapperFieldSetMapper<CovidInput>() {
@@ -59,8 +59,28 @@ public class BatchConfig {
     public JdbcBatchItemWriter<Covid> writer(DataSource dataSource) {
         return new JdbcBatchItemWriterBuilder<Covid>()
                 .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
-                .sql("INSERT INTO covid (location, date, variant, num_sequences, perc_sequences, num_sequences_total) "
-                + " VALUES (:location, :date, :variant, :num_sequences, :perc_sequences, :num_sequences_total)")
-                 .build();
+                .sql("INSERT INTO covid (id,location, date, variant, num_sequences, perc_sequences, total_sequences) "
+                        + " VALUES (:id, :location, :date, :variant, :numSequences, :percSequences, :totalSequences)")
+                        .dataSource(dataSource).build();
+    }
+
+    @Bean
+    public Job importUserJob(JobCompletionNotificationListener listener, Step step1) {
+        return jobBuilderFactory.get("importUserJob")
+                .incrementer(new RunIdIncrementer())
+                .listener(listener)
+                .flow(step1)
+                .end()
+                .build();
+    }
+
+    @Bean
+    public Step step1(JdbcBatchItemWriter<Covid> writer) {
+        return stepBuilderFactory.get("step1")
+                .<CovidInput, Covid>chunk(10)
+                .reader(reader())
+                .processor(processor())
+                .writer(writer)
+                .build();
     }
 }

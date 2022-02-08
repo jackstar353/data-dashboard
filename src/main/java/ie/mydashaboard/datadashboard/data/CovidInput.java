@@ -1,13 +1,20 @@
 package ie.mydashaboard.datadashboard.data;
 
 public class CovidInput {
-
+    private String id;
     private String location;
     private String date;
     private String variant;
     private String num_sequences;
     private String perc_sequences;
-    private String num_sequences_total;
+    private String total_sequences;
+
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
+    }
     
     public String getLocation() {
         return location;
@@ -39,11 +46,11 @@ public class CovidInput {
     public void setPerc_sequences(String perc_sequences) {
         this.perc_sequences = perc_sequences;
     }
-    public String getNum_sequences_total() {
-        return num_sequences_total;
+    public String getTotal_sequences() {
+        return total_sequences;
     }
-    public void setNum_sequences_total(String num_sequences_total) {
-        this.num_sequences_total = num_sequences_total;
+    public void setTotal_sequences(String total_sequences) {
+        this.total_sequences = total_sequences;
     }
    
 }

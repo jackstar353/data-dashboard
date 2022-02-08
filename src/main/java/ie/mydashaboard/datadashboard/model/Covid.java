@@ -1,20 +1,34 @@
 package ie.mydashaboard.datadashboard.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Covid {
+public class Covid implements Serializable{
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    
+    private int id;
+    
     private String location;
     private LocalDate date;
     private String variant;
     private int numSequences;
-    private int percSequences;
-    private int numSequencestotal;
+    private Double percSequences;
+    private int totalSequences;
+
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
     
     public String getLocation() {
         return location;
@@ -40,17 +54,18 @@ public class Covid {
     public void setNumSequences(int numSequences) {
         this.numSequences = numSequences;
     }
-    public int getPercSequences() {
+    public double getPercSequences() {
         return percSequences;
     }
-    public void setPercSequences(int percSequences) {
+    public void setPercSequences(Double percSequences) {
         this.percSequences = percSequences;
     }
-    public int getNumSequencestotal() {
-        return numSequencestotal;
+    public int getTotalSequences() {
+        return totalSequences;
     }
-    public void setNumSequencestotal(int numSequencestotal) {
-        this.numSequencestotal = numSequencestotal;
+    public void setTotalSequences(int totalSequences) {
+        this.totalSequences = totalSequences;
     }
+   
     
 }

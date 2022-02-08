@@ -1,7 +1,7 @@
 package ie.mydashaboard.datadashboard.data;
     
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+//import java.time.LocalDateTime;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,12 +18,14 @@ public class CovidDataProcessor implements ItemProcessor<CovidInput, Covid> {
   public Covid process(final CovidInput covidInput) throws Exception {
    
     Covid covid = new Covid();
-    covid.setDate(LocalDate.parse(covidInput.getDate()));
-    covid.setNumSequences(Integer.parseInt(covidInput.getNum_sequences());
-    covid.setVariant(covidInput.getVariant());
+    covid.setId(Integer.parseInt(covidInput.getId()));
     covid.setLocation(covidInput.getLocation());
-    covid.setNumSequencestotal(Integer.parseInt(covidInput.getNum_sequences_total()));
-    covid.setPercSequences(Integer.parseInt(covidInput.getPerc_sequences()));
+    covid.setDate(LocalDate.parse(covidInput.getDate()));
+    covid.setVariant(covidInput.getVariant());
+    covid.setNumSequences(Integer.parseInt(covidInput.getNum_sequences()));
+    covid.setPercSequences(Double.parseDouble(covidInput.getPerc_sequences()));
+    covid.setTotalSequences(Integer.parseInt(covidInput.getTotal_sequences()));
+   
     return covid;
 
   
